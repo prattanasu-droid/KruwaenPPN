@@ -52,3 +52,12 @@
 .admin-sidebar>.admin-logout{margin-top:auto!important;border-top:1px solid #ece4f2;border-radius:0;padding-top:20px;text-align:left}
 .admin-logout-mobile{display:none}
 @media(max-width:760px){.admin-main{min-height:calc(100dvh - 155px);display:flex;flex-direction:column}.admin-header-actions{justify-content:flex-end}.admin-logout-mobile{display:inline-flex;align-items:center;align-self:flex-start;gap:8px;margin-top:auto;padding:25px 0 8px;color:#775288;font-size:14px}.admin-table-box{margin-bottom:25px}}
+
+/* Expanded subject collection and developer contact details. */
+.color-8>span{background:#fff2db;color:#93651e}.color-9>span{background:#e7f3ff;color:#356fa1}
+.tag-8{background:#fff2db;color:#93651e}.tag-9{background:#e7f3ff;color:#356fa1}
+.about-body .developer-details{text-align:left;overflow-wrap:anywhere}
+.about-body .developer-details p{font-size:16px;line-height:1.9;color:#5c496a;margin:16px 0}
+.about-body .developer-details strong{font-weight:600}
+@media(min-width:1051px){.subject-grid{grid-template-columns:repeat(11,minmax(0,1fr))}}
+@media(min-width:761px) and (max-width:1050px){.subject-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.subject-tile.all{grid-row:auto}}

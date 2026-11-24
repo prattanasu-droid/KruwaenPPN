@@ -14,7 +14,7 @@ create table if not exists public.media (
   id uuid primary key default gen_random_uuid(),
   title text not null check (char_length(trim(title)) between 1 and 150),
   type text not null check (type in ('ใบงาน','สไลด์การสอน','เกมการเรียนรู้','วิดีโอ','สื่อสร้างสรรค์')),
-  subject text not null check (subject in ('ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','สังคมศึกษา','ศิลปะ','การงานอาชีพ','สุขศึกษา')),
+  subject text not null check (subject in ('ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','สังคมศึกษา','ศิลปะ','การงานอาชีพ','สุขศึกษา','ประวัติศาสตร์','หน้าที่พลเมือง')),
   grade text not null check (grade in ('อนุบาล 1','อนุบาล 2','อนุบาล 3','ป.1','ป.2','ป.3','ป.4','ป.5','ป.6','ม.1','ม.2','ม.3','ม.4','ม.5','ม.6')),
   description text not null check (char_length(trim(description)) between 1 and 2000),
   image text not null check (image ~* '^https?://[^[:space:]]+$'),

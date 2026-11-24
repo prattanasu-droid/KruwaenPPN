@@ -1,5 +1,5 @@
 export type Media={id:string;title:string;subject:string;grade:string;type:string;description:string;image:string;url?:string;file?:string;fileName?:string;created:string;featured?:boolean;sample?:boolean};
-export const subjects=['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','สังคมศึกษา','ศิลปะ','การงานอาชีพ','สุขศึกษา'];
+export const subjects=['ภาษาไทย','คณิตศาสตร์','วิทยาศาสตร์','ภาษาอังกฤษ','สังคมศึกษา','ศิลปะ','การงานอาชีพ','สุขศึกษา','ประวัติศาสตร์','หน้าที่พลเมือง'];
 export const grades=['อนุบาล 1','อนุบาล 2','อนุบาล 3','ป.1','ป.2','ป.3','ป.4','ป.5','ป.6','ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
 export const types=['ใบงาน','สไลด์การสอน','เกมการเรียนรู้','วิดีโอ','สื่อสร้างสรรค์'];
 export const samples:Media[]=[
