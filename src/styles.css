@@ -61,3 +61,14 @@
 .about-body .developer-details strong{font-weight:600}
 @media(min-width:1051px){.subject-grid{grid-template-columns:repeat(11,minmax(0,1fr))}}
 @media(min-width:761px) and (max-width:1050px){.subject-grid{grid-template-columns:repeat(6,minmax(0,1fr))}.subject-tile.all{grid-row:auto}}
+
+/* Shared usage totals for the library, details, and admin table. */
+.usage-count{display:inline-flex;align-items:center;gap:6px;color:#68459b;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.usage-count svg{flex-shrink:0}
+.card-usage{margin:0 0 10px}.card-usage .usage-count{background:#f4eefc;border-radius:6px;padding:5px 8px}
+.detail-usage{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:12px 0;margin:4px 0 13px;border-top:1px solid #eee7f5;border-bottom:1px solid #eee7f5}
+.detail-usage .usage-count{font-size:15px}.detail-usage small{font-size:12px;color:#72617e}
+.usage-notice{background:#f7f1ff;border:1px solid #e7d9fa;color:#63468a;font-size:14px;padding:13px 16px;border-radius:9px;margin:0 0 18px}
+@media(max-width:760px){.card-usage .usage-count{font-size:11px;padding:4px 6px;gap:4px}.card-usage .usage-count svg{width:13px}.detail-usage .usage-count{font-size:14px}}
+
+.detail-content>.usage-error{font-size:12px;line-height:1.8;color:#865a2b;background:#fff7e9;border-radius:7px;padding:9px 11px;margin:8px 0}

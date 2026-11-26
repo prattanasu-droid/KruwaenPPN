@@ -1,6 +1,7 @@
 import type {SupabaseClient} from '@supabase/supabase-js';
 import {subjects,grades,types,type Media} from './data.ts';
 import {normalizeResourceUrl} from './media-links.ts';
+import {usageCount} from './usage.ts';
 
 export class LibraryError extends Error {
   code:string;
@@ -45,12 +46,35 @@ export function createLibraryApi(client:SupabaseClient,config:Config){
     try{const result=await session();if(!result.authenticated)throw new LibraryError('บัญชีนี้ยังไม่มีสิทธิ์แอดมิน กรุณาเพิ่ม User UID ในตาราง admin_users');return result;}catch(error){await client.auth.signOut({scope:'local'});throw error;}
   }
   async function logout(){const {error}=await client.auth.signOut({scope:'local'});if(error)throw new LibraryError('ออกจากระบบไม่สำเร็จ กรุณาลองอีกครั้ง');return {authenticated:false};}
-  async function list(){
+  async function listMedia(){
     const items:Media[]=[];
     for(let offset=0;;offset+=1000){
       const {data,error}=await client.from(config.table).select(columns).order('created_at',{ascending:false}).range(offset,offset+999);
-      if(error)databaseError(error);items.push(...(data||[]).map(mapped));if((data?.length||0)<1000)return {items};
+      if(error)databaseError(error);items.push(...(data||[]).map(mapped));if((data?.length||0)<1000)return items;
     }
+  }
+  async function listUsage(){
+    const counts=new Map<string,number>();
+    try {
+      for(let offset=0;;offset+=1000){
+        const {data,error}=await client.from('media_usage').select('media_id,click_count').order('media_id').range(offset,offset+999);
+        if(error)return null;
+        for(const row of data||[]){const count=usageCount(row.click_count);if(count===undefined)return null;counts.set(row.media_id,count);}
+        if((data?.length||0)<1000)return counts;
+      }
+    } catch {return null;}
+  }
+  async function list(){
+    const [items,counts]=await Promise.all([listMedia(),listUsage()]);
+    return {items:items.map(item=>({...item,...(counts?{usageCount:counts.get(item.id)??0}:{})})),usageAvailable:counts!==null};
+  }
+  async function recordClick(id:string){
+    if(!uuid.test(id))throw new LibraryError('รหัสสื่อไม่ถูกต้อง');
+    const {data,error}=await client.rpc('record_media_click',{p_media_id:id});
+    if(error)throw new LibraryError('เปิดสื่อได้ตามปกติ แต่บันทึกจำนวนการเข้าใช้ไม่สำเร็จ','USAGE_UNAVAILABLE');
+    const count=usageCount(data);
+    if(count===undefined)throw new LibraryError('ยังอ่านจำนวนการเข้าใช้ไม่ได้','USAGE_UNAVAILABLE');
+    return {count};
   }
   function validCover(image:unknown){const prefix=config.url+'/storage/v1/object/public/'+config.bucket+'/';return typeof image==='string'&&image.startsWith(prefix)&&/^[a-f0-9-]+\/[a-f0-9-]+\.jpg$/.test(image.slice(prefix.length));}
   async function save(input:Record<string,unknown>,editing=false){
@@ -84,10 +108,11 @@ export function createLibraryApi(client:SupabaseClient,config:Config){
     if(route==='/api/admin/session'&&method==='GET')return session();
     if(route==='/api/admin/logout'&&method==='POST')return logout();
     if(route==='/api/media'&&method==='GET')return list();
+    if(route==='/api/media/usage'&&method==='POST')return recordClick(JSON.parse(String(options.body)).id);
     if(route==='/api/media'&&(method==='POST'||method==='PUT'))return save(JSON.parse(String(options.body)),method==='PUT');
     if(route==='/api/media'&&method==='DELETE')return remove(new URL(path,'https://local.invalid').searchParams.get('id')||'');
     if(route==='/api/upload'&&method==='POST'&&options.body instanceof FormData)return upload(options.body);
     throw new LibraryError('ไม่พบคำขอ');
   }
-  return {request,login,session,logout,list,save,remove,upload};
+  return {request,login,session,logout,list,save,remove,upload,recordClick};
 }
